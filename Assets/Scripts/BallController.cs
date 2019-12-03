@@ -6,17 +6,20 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     [SerializeField] float mKickForce = 10f;
-    [SerializeField] static float mHealth = 100f;
+    [SerializeField] public float mHealth = 100f;
     [SerializeField] float mHoldingDamage = 1.5f;
     [SerializeField] float mMovingDamage = 1.5f;
     private Rigidbody2D rb;
     private bool isHeldByCat = false;
     private bool isMoving = false;
     private bool isKicked = false;
+    private Transform initialTransform;
 
-    void Start()
+    
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        initialTransform = rb.transform;
     }
 
     // Update is called once per frame
@@ -81,8 +84,9 @@ public class BallController : MonoBehaviour
         isHeldByCat = false;
     }
 
-    public static float GetHealth()
+    public void OnEnable()
     {
-        return mHealth;
+        rb.transform.position = initialTransform.position;
     }
 }
+

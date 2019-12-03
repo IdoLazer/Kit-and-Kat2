@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     private KeyCode mThrowKey = KeyCode.Space;
 //    private float mPlayerAngle = 0f;
     private bool mCanJump = false;
-    public static bool IsHoldingBall = false;
+    public bool IsHoldingBall = false;
     
     
     readonly float gravity = -9.8f;

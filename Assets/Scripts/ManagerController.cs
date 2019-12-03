@@ -75,8 +75,9 @@ public class ManagerController : MonoBehaviour
     void PlayMode()
     {
         float timeProgress = TimerUpdate();
+        currScore = timeProgress;
 
-        if (timeProgress >= gameTimeSeconds)
+        if (timeProgress <= 0)
         {
             EndPlayTheGame();
         }
@@ -123,14 +124,14 @@ public class ManagerController : MonoBehaviour
 
     private float TimerUpdate()
     {
-        float t = Time.time - startTime;
-        int precentTimePassed = (int) ((t / gameTimeSeconds) * 100);
-        //string minutes = (timerCountDown - Mathf.Ceil(t / 60)).ToString();
-        //string seconds = (60 - (t % 60)).ToString("f1");
-        currScore = (timerCountDown - precentTimePassed);
-        currTimerMsg.text = currScore.ToString("f2");
+        //float t = Time.time - startTime;
+        //int precentTimePassed = (int) ((t / gameTimeSeconds) * 100);
+        ////string minutes = (timerCountDown - Mathf.Ceil(t / 60)).ToString();
+        ////string seconds = (60 - (t % 60)).ToString("f1");
+        //currScore = (timerCountDown - precentTimePassed);
+        //currTimerMsg.text = currScore.ToString("f2");
 
-        t = BallController.GetHealth();
+        float t = ball.GetComponent<BallController>().mHealth;
         return t;
     }
 }
