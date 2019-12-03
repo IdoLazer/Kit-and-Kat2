@@ -16,7 +16,6 @@ public class ManagerController : MonoBehaviour
     public TextMeshProUGUI scoreRecordMsg;
     public TextMeshProUGUI currScoredMsg;
     public TextMeshProUGUI currTimerMsg;
-    public TextMeshProUGUI startOverButton;
 
     private static ManagerController _instance;
 
@@ -131,6 +130,7 @@ public class ManagerController : MonoBehaviour
         currScore = (timerCountDown - precentTimePassed);
         currTimerMsg.text = currScore.ToString("f2");
 
+        t = BallController.GetHealth();
         return t;
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     [SerializeField] float mKickForce = 10f;
-    [SerializeField] float mHealth = 100f;
+    [SerializeField] static float mHealth = 100f;
     [SerializeField] float mHoldingDamage = 1.5f;
     [SerializeField] float mMovingDamage = 1.5f;
     private Rigidbody2D rb;
@@ -79,5 +79,10 @@ public class BallController : MonoBehaviour
     public void Release()
     {
         isHeldByCat = false;
+    }
+
+    public static float GetHealth()
+    {
+        return mHealth;
     }
 }
