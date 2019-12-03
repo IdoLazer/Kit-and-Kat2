@@ -86,6 +86,7 @@ public class BallController : MonoBehaviour
 
     public void OnEnable()
     {
+        Debug.Log("hiii");
         rb.transform.position = initialTransform.position;
     }
 }
