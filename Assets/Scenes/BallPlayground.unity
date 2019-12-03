@@ -563,7 +563,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3527644118025495, guid: fd1fd3eae67563849a6bbf09dca84dd7, type: 3}
       propertyPath: m_Name
-      value: Floor (3)
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 8207848519319238515, guid: fd1fd3eae67563849a6bbf09dca84dd7,
         type: 3}
@@ -622,6 +622,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd1fd3eae67563849a6bbf09dca84dd7, type: 3}
+--- !u!1 &1711451940 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3527644118025495, guid: fd1fd3eae67563849a6bbf09dca84dd7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1711451939}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1711451941
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711451940}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8b2a85befa2c2a045a882878d88e7b23, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1840675562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -757,6 +782,10 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1209007099, guid: de9fcc1636f7a2949a8635cddb90177c, type: 3}
+      propertyPath: m_Mesh
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de9fcc1636f7a2949a8635cddb90177c, type: 3}
