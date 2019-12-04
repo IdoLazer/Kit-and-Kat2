@@ -18,9 +18,10 @@ public class PlayerController : MonoBehaviour
     private KeyCode mThrowKey = KeyCode.Space;
 //    private float mPlayerAngle = 0f;
     private bool mCanJump = true;
-    public bool canWalkLeft = true;
-    public bool canWalkRight = true;
-    public bool IsHoldingBall = false;
+    private bool canWalkLeft = true;
+    private bool canWalkRight = true;
+    private bool IsHoldingBall = false;
+    private SpriteRenderer spriteRenderer;
     private List<Collider2D> platformList = new List<Collider2D>();
     
     
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         NormRotation = mPlayer.rotation;
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -65,10 +67,12 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(mRightKey) && canWalkRight)
         {
             mPlayer.transform.Translate(Vector2.right * (mPlayerSpeed * Time.deltaTime));
+            spriteRenderer.flipX = false;
         }
         else if (Input.GetKey(mLeftKey) && canWalkLeft)
         {
             mPlayer.transform.Translate(Vector2.left * (mPlayerSpeed * Time.deltaTime));
+            spriteRenderer.flipX = true;
         }
 
         if (Input.GetKeyDown(mUpKey) && isGrounded && mCanJump)
