@@ -103,9 +103,6 @@ MonoBehaviour:
   mLeftKey: 97
   mUpKey: 119
   jumpForce: 7
-  canWalkLeft: 1
-  canWalkRight: 1
-  IsHoldingBall: 0
 --- !u!70 &1306122454
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -153,7 +150,7 @@ Animator:
   m_GameObject: {fileID: 698110614617118846}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e9cb62e29ebc8bc438d457a788a94759, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

@@ -6,6 +6,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    //constants
+    private int IDLE = 0;
+    private int WALKING = 1;
+    private int JUMP = 2;
+    private int GRAB_BALL = 3;
+    private int THROW_BALL = 4;
+
+
     public float mPlayerSpeed;
 //    public Rigidbody2D mPlayer;
     public Transform mPlayer;
@@ -23,6 +31,8 @@ public class PlayerController : MonoBehaviour
     private bool IsHoldingBall = false;
     private SpriteRenderer spriteRenderer;
     private List<Collider2D> platformList = new List<Collider2D>();
+    private Animator ac;
+
     
     
     readonly float gravity = -9.8f;
@@ -37,6 +47,7 @@ public class PlayerController : MonoBehaviour
     {
         NormRotation = mPlayer.rotation;
         spriteRenderer = GetComponent<SpriteRenderer>();
+        ac = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -63,24 +74,38 @@ public class PlayerController : MonoBehaviour
             }
             return;
         }
-        //        float xValue = 0;
+        if (velocity_Y == 0 || (velocity_Y < 0 && ac.GetInteger("state") != JUMP))
+        {
+            ac.SetInteger("state", IDLE);
+        }
         if (Input.GetKey(mRightKey) && canWalkRight)
         {
+            if (isGrounded)
+            {
+                ac.SetInteger("state", WALKING);
+            }
             mPlayer.transform.Translate(Vector2.right * (mPlayerSpeed * Time.deltaTime));
             spriteRenderer.flipX = false;
         }
         else if (Input.GetKey(mLeftKey) && canWalkLeft)
         {
+            Debug.Log("here");
+            if (isGrounded)
+            {
+                Debug.Log("here?");
+                ac.SetInteger("state", WALKING);
+            }
             mPlayer.transform.Translate(Vector2.left * (mPlayerSpeed * Time.deltaTime));
             spriteRenderer.flipX = true;
         }
 
         if (Input.GetKeyDown(mUpKey) && isGrounded && mCanJump)
         {
+            ac.SetInteger("state", JUMP);
             velocity_Y = jumpForce;
             isGrounded = false;
         }
-
+        
     }
 
     public void OnTriggerEnter2D(Collider2D other) 
