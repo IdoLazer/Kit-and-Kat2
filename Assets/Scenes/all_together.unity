@@ -1261,6 +1261,11 @@ PrefabInstance:
       propertyPath: mHealth
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 4001480558244026389, guid: de9fcc1636f7a2949a8635cddb90177c,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 8dbb6187293d6504ab121a6c66d227c5, type: 2}
     - target: {fileID: 1209007099, guid: de9fcc1636f7a2949a8635cddb90177c, type: 3}
       propertyPath: m_Mesh
       value: 

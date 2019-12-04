@@ -14,18 +14,30 @@ public class BallController : MonoBehaviour
     private bool isMoving = false;
     private bool isKicked = false;
     private Transform initialTransform;
+    private Animator ac;
 
     
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         initialTransform = rb.transform;
+        ac = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
         Damage();
+        int state = (int)(mHealth / 10) + 1;
+        if (state > 10)
+        {
+            state = 10;
+        }
+        if (mHealth <= 0)
+        {
+            state = 0;
+        }
+        ac.SetInteger("state", state);
         if (isKicked)
         {
             if (rb.velocity.y <= 0)
