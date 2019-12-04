@@ -96,13 +96,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ad08f65ba1f8a940898d030398efb00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mPlayerSpeed: 7
+  mPlayerSpeed: 10
   mPlayer: {fileID: 698110614617118845}
   ball: {fileID: 0}
   mRightKey: 275
   mLeftKey: 276
   mUpKey: 273
   jumpForce: 7
+  IsHoldingBall: 0
 --- !u!70 &1306122454
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -169,7 +170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 698110615589903332}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Player 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

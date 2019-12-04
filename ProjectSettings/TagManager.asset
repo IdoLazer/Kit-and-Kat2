@@ -7,6 +7,8 @@ TagManager:
   - Ground
   - Ball
   - Obstacle
+  - Left Wall
+  - Right Wall
   layers:
   - Default
   - TransparentFX

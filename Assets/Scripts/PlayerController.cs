@@ -17,14 +17,17 @@ public class PlayerController : MonoBehaviour
 
     private KeyCode mThrowKey = KeyCode.Space;
 //    private float mPlayerAngle = 0f;
-    private bool mCanJump = false;
+    private bool mCanJump = true;
+    public bool canWalkLeft = true;
+    public bool canWalkRight = true;
     public bool IsHoldingBall = false;
+    private List<Collider2D> platformList = new List<Collider2D>();
     
     
     readonly float gravity = -9.8f;
-    private float ground_Y = -2.74f; //should be 0 in the real game
-    private bool isGrounded = true;
+    private bool isGrounded = false;
     private float velocity_Y;
+    private GameObject curPlatform = null;
 //    private float deltaFromLastColl = 0f;
     private Quaternion NormRotation;
 
@@ -37,7 +40,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(IsHoldingBall)
+        // If the player still didnt touched a ground continue using the gravity force on it.
+        if (!isGrounded)
+        {
+            float newPosition_Y = mPlayer.position.y + velocity_Y * Time.deltaTime;
+            mPlayer.position = new Vector2(mPlayer.position.x, newPosition_Y);
+            velocity_Y += gravity * Time.deltaTime;
+
+        }
+        if (IsHoldingBall)
         {
             if (Input.GetKeyDown(mThrowKey))
             {
@@ -51,57 +62,48 @@ public class PlayerController : MonoBehaviour
             return;
         }
         //        float xValue = 0;
-        if (Input.GetKey(mRightKey))
+        if (Input.GetKey(mRightKey) && canWalkRight)
         {
             mPlayer.transform.Translate(Vector2.right * (mPlayerSpeed * Time.deltaTime));
         }
-        else if (Input.GetKey(mLeftKey))
+        else if (Input.GetKey(mLeftKey) && canWalkLeft)
         {
             mPlayer.transform.Translate(Vector2.left * (mPlayerSpeed * Time.deltaTime));
         }
 
-        if (Input.GetKeyDown(mUpKey) && isGrounded)
+        if (Input.GetKeyDown(mUpKey) && isGrounded && mCanJump)
         {
             velocity_Y = jumpForce;
             isGrounded = false;
         }
 
-        // If the player still didnt touched a ground continue using the gravity force on it.
-        if (!isGrounded)
-        {
-            float newPosition_Y = mPlayer.position.y + velocity_Y * Time.deltaTime;
-            if (newPosition_Y <= ground_Y)
-            {
-                mPlayer.position = new Vector2(mPlayer.position.x, ground_Y);
-                isGrounded = true;
-                velocity_Y = 0;
-            }
-            else
-            {
-               mPlayer.position = new Vector2(mPlayer.position.x, newPosition_Y);
-                velocity_Y += gravity * Time.deltaTime;
-            }
-        }
     }
 
-    // +++++++++++++ need to be executed
     public void OnTriggerEnter2D(Collider2D other) 
     {
+        if (other.CompareTag("Left Wall"))
+        {
+            canWalkLeft = false;
+        }
+        if (other.CompareTag("Right Wall"))
+        {
+            canWalkRight = false;
+        }
         if (other.CompareTag("Obstacle"))
         {
             velocity_Y = 0;
-            Debug.Log("Ouch!");
-            isGrounded = false;
         } 
         else if (other.CompareTag("Ground"))
         {
+            platformList.Add(other);
+            curPlatform = other.gameObject;
             isGrounded = true;
-            velocity_Y = 0; // do i need this?
+            velocity_Y = Mathf.Max(velocity_Y, 0);
             mPlayer.rotation = other.transform.rotation;
-            Debug.Log("Touched an obstacle!! " + mPlayer.rotation.z);
         }
         else if (other.CompareTag("Ball"))
         {
+
             //Check if the trigger is a ball trigger or cat  
             //Update the game controller that you have the ball? 
             IsHoldingBall = true;
@@ -119,7 +121,31 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Obstacle"))
         {
-            isGrounded = false;
+            if (other.transform.parent.gameObject != curPlatform)
+            {
+                mCanJump = false;
+                if (!isGrounded)
+                {
+                    canWalkRight = false;
+                    canWalkLeft = false;
+                }
+                else
+                {
+                    canWalkRight = true;
+                    canWalkLeft = true;
+                }
+            }
+            else
+            {
+                mCanJump = true;
+                canWalkRight = true;
+                canWalkLeft = true;
+            }
+        }
+        if (other.CompareTag("Ground") && velocity_Y < 0)
+        {
+            velocity_Y = 0;
+            isGrounded = true;
         }
     }
 
@@ -127,9 +153,27 @@ public class PlayerController : MonoBehaviour
     {
         if (other.CompareTag("Ground"))
         {
-            Debug.Log("Fell from an obstacle!!");
-            isGrounded = false;
+            platformList.Remove(other);
+            if (platformList.Count == 0)
+            {
+                isGrounded = false;
+            }
+            curPlatform = null;
             mPlayer.rotation = NormRotation;
+        }
+        if (other.CompareTag("Obstacle"))
+        {
+            mCanJump = true;
+            canWalkRight = true;
+            canWalkLeft = true;
+        }
+        if (other.CompareTag("Left Wall"))
+        {
+            canWalkLeft = true;
+        }
+        if (other.CompareTag("Right Wall"))
+        {
+            canWalkRight = true;
         }
     }
 }
