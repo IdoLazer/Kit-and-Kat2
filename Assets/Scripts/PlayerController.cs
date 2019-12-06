@@ -10,8 +10,8 @@ public class PlayerController : MonoBehaviour
     private int IDLE = 0;
     private int WALKING = 1;
     private int JUMP = 2;
-    private int GRAB_BALL = 3;
     private int THROW_BALL = 4;
+
 
 
     public float mPlayerSpeed;
@@ -22,6 +22,10 @@ public class PlayerController : MonoBehaviour
     public KeyCode mLeftKey;
     public KeyCode mUpKey;
     public float jumpForce;
+    public AudioClip mWalkingSoundEffect;
+    public AudioClip mJumpingSoundEffect;
+    public AudioClip mHoldingSoundEffect;
+    public AudioClip mThrowingSoundEffect;
 
     private KeyCode mThrowKey = KeyCode.Space;
 //    private float mPlayerAngle = 0f;
@@ -32,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private List<Collider2D> platformList = new List<Collider2D>();
     private Animator ac;
+    private AudioSource audioSource;
 
     
     
@@ -48,12 +53,14 @@ public class PlayerController : MonoBehaviour
         NormRotation = mPlayer.rotation;
         spriteRenderer = GetComponent<SpriteRenderer>();
         ac = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = mWalkingSoundEffect;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // If the player still didnt touched a ground continue using the gravity force on it.
+        // If the player still didnt touch the ground continue applying gravity on him.
         if (!isGrounded)
         {
             float newPosition_Y = mPlayer.position.y + velocity_Y * Time.deltaTime;
@@ -61,46 +68,57 @@ public class PlayerController : MonoBehaviour
             velocity_Y += gravity * Time.deltaTime;
 
         }
+        // If the player is holding the ball he can't move until he presses the throw key
         if (IsHoldingBall)
         {
-            if (Input.GetKeyDown(mThrowKey))
+            if (Input.GetKeyDown(mThrowKey)) // This means the ball is thrown
             {
+                ac.SetInteger("state", THROW_BALL); // Play animation
+                AudioSource.PlayClipAtPoint(mThrowingSoundEffect, transform.position); // Play throw SFX
                 IsHoldingBall = false;
                 ball.isKinematic = false;
                 ball.constraints = RigidbodyConstraints2D.None;
                 ball.transform.parent = null;
                 ball.GetComponent<BallController>().Release();
-                ball.GetComponent<BallController>().Kick(Mathf.Deg2Rad * 45);
+                ball.GetComponent<BallController>().Kick(Mathf.Deg2Rad * 45); // Throw ball in some angle;
             }
             return;
         }
-        if (velocity_Y == 0 || (velocity_Y < 0 && ac.GetInteger("state") != JUMP))
+        if (velocity_Y == 0 || (velocity_Y < 0 && ac.GetInteger("state") != JUMP)) // If the cat is standing still or falling (without jumping)
         {
+            audioSource.Pause();
             ac.SetInteger("state", IDLE);
         }
-        if (Input.GetKey(mRightKey) && canWalkRight)
+        if (Input.GetKey(mRightKey) && canWalkRight) // Move the player right
         {
-            if (isGrounded)
+            if (isGrounded) // If the player is on the ground, a walking animation should start
             {
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play(); // play walking SFX
+                }
                 ac.SetInteger("state", WALKING);
             }
             mPlayer.transform.Translate(Vector2.right * (mPlayerSpeed * Time.deltaTime));
             spriteRenderer.flipX = false;
         }
-        else if (Input.GetKey(mLeftKey) && canWalkLeft)
+        else if (Input.GetKey(mLeftKey) && canWalkLeft) // Move the player left
         {
-            Debug.Log("here");
-            if (isGrounded)
+            if (isGrounded) // If the player is on the ground, a walking animation should start
             {
-                Debug.Log("here?");
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play(); // play walking SFX
+                }
                 ac.SetInteger("state", WALKING);
             }
             mPlayer.transform.Translate(Vector2.left * (mPlayerSpeed * Time.deltaTime));
             spriteRenderer.flipX = true;
         }
 
-        if (Input.GetKeyDown(mUpKey) && isGrounded && mCanJump)
+        if (Input.GetKeyDown(mUpKey) && isGrounded && mCanJump) // Make the player jump
         {
+            AudioSource.PlayClipAtPoint(mJumpingSoundEffect, transform.position); // Play jumping SFX
             ac.SetInteger("state", JUMP);
             velocity_Y = jumpForce;
             isGrounded = false;
@@ -110,19 +128,19 @@ public class PlayerController : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D other) 
     {
-        if (other.CompareTag("Left Wall"))
+        if (other.CompareTag("Left Wall")) // Bump into left wall
         {
             canWalkLeft = false;
         }
-        if (other.CompareTag("Right Wall"))
+        if (other.CompareTag("Right Wall")) // Bump into right wall
         {
             canWalkRight = false;
         }
-        if (other.CompareTag("Obstacle"))
+        if (other.CompareTag("Obstacle")) // Bump into platform from the wrong direction (not from above)
         {
             velocity_Y = 0;
         } 
-        else if (other.CompareTag("Ground"))
+        else if (other.CompareTag("Ground")) // Touch the ground or a platform from above
         {
             platformList.Add(other);
             curPlatform = other.gameObject;
@@ -130,15 +148,15 @@ public class PlayerController : MonoBehaviour
             velocity_Y = Mathf.Max(velocity_Y, 0);
             mPlayer.rotation = other.transform.rotation;
         }
-        else if (other.CompareTag("Ball"))
+        else if (other.CompareTag("Ball")) // Touch the ball
         {
-
-            //Check if the trigger is a ball trigger or cat  
-            //Update the game controller that you have the ball? 
+            AudioSource.PlayClipAtPoint(mHoldingSoundEffect, transform.position); // Play Grabbing ball SFX
+            ac.SetInteger("state" ,-1); // Prevent any other animation while grabbing ball 
+            ac.SetTrigger("grab"); // Set animation to grabbing ball
             IsHoldingBall = true;
             other.transform.parent = this.transform;
-            other.transform.position = transform.position;
-            other.enabled = false;
+            other.transform.position = transform.position; // Move the ball to the player's position
+            other.enabled = false; // Disable ball collider
             ball = other.GetComponent<Rigidbody2D>();
             ball.constraints = RigidbodyConstraints2D.FreezeAll;
             ball.isKinematic = true;
@@ -148,9 +166,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Obstacle"))
+        if (other.CompareTag("Obstacle")) 
         {
-            if (other.transform.parent.gameObject != curPlatform)
+            if (other.transform.parent.gameObject != curPlatform) 
             {
                 mCanJump = false;
                 if (!isGrounded)
