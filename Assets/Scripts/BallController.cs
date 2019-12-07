@@ -15,6 +15,7 @@ public class BallController : MonoBehaviour
     private bool isKicked = false;
     private Transform initialTransform;
     private Animator ac;
+    public static bool throwToUpPlayer = false;
 
     
     void Awake()
@@ -44,8 +45,10 @@ public class BallController : MonoBehaviour
             {
                 GetComponent<Collider2D>().enabled = true;
                 isKicked = false;
+                // Returns all the blocked colliders
                 Physics2D.IgnoreLayerCollision(8, 9, false);
-                Physics2D.IgnoreLayerCollision(8, 10, false);
+                Physics2D.IgnoreLayerCollision(8, 11, false);
+                Physics2D.IgnoreLayerCollision(8, 12, false);
             }
         }
         // TODO: remove
@@ -73,17 +76,25 @@ public class BallController : MonoBehaviour
         }
     }
 
-    public void Kick(float angle)
+    public void Kick(float angle, Transform throwerP)
     {
         isHeldByCat = false;
         GetComponent<Collider2D>().enabled = true;
         if (isKicked) return;
+        // Blocks the collider of the throwing player.
         Physics2D.IgnoreLayerCollision(8, 9);
-        Physics2D.IgnoreLayerCollision(8, 10);
+        if (throwerP.CompareTag("Player1"))
+        {
+            Physics2D.IgnoreLayerCollision(8, 11);
+        }
+        else if (throwerP.CompareTag("Player2"))
+        {
+            Physics2D.IgnoreLayerCollision(8, 12);
+        }
         isKicked = true;
         float ax = Mathf.Cos(angle);
         float ay = Mathf.Sin(angle);
-        rb.AddForce(new Vector2(ax, ay) * mKickForce, ForceMode2D.Impulse);
+        rb.AddForce(new Vector2(ax,  ay) * mKickForce, ForceMode2D.Impulse);
     }
 
     public void Hold()

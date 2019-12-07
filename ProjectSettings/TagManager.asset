@@ -9,6 +9,8 @@ TagManager:
   - Obstacle
   - Left Wall
   - Right Wall
+  - Player1
+  - Player2
   layers:
   - Default
   - TransparentFX
@@ -21,8 +23,8 @@ TagManager:
   - Ball
   - Ground
   - Player
-  - 
-  - 
+  - Player1
+  - Player2
   - 
   - 
   - 

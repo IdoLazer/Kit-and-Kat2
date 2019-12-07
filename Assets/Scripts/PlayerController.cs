@@ -11,12 +11,14 @@ public class PlayerController : MonoBehaviour
     private int WALKING = 1;
     private int JUMP = 2;
     private int THROW_BALL = 4;
+    private int ANGLE_OFFSET = 10;
 
 
 
     public float mPlayerSpeed;
 //    public Rigidbody2D mPlayer;
     public Transform mPlayer;
+    public Transform otherPlayer;
     public Rigidbody2D ball;
     public KeyCode mRightKey;
     public KeyCode mLeftKey;
@@ -80,7 +82,7 @@ public class PlayerController : MonoBehaviour
                 ball.constraints = RigidbodyConstraints2D.None;
                 ball.transform.parent = null;
                 ball.GetComponent<BallController>().Release();
-                ball.GetComponent<BallController>().Kick(Mathf.Deg2Rad * 45); // Throw ball in some angle;
+                ball.GetComponent<BallController>().Kick(calcAngle(), mPlayer); // Throw ball in some angle;
             }
             return;
         }
@@ -222,5 +224,33 @@ public class PlayerController : MonoBehaviour
         {
             canWalkRight = true;
         }
+    }
+
+   
+   // Calculates the angle the ball will be kicked with.
+   private float calcAngle()
+    {
+        float deltaY = Mathf.Abs(otherPlayer.position.y - mPlayer.position.y);
+        float deltaX = Mathf.Abs(otherPlayer.position.x - mPlayer.position.x);
+        float bestAngle = Mathf.Atan(deltaY / deltaX); // The angle that the other player is compere to this player
+        
+        // When the other player is lower, throw in a flat angle.
+        if (otherPlayer.position.y < mPlayer.position.y)
+        {
+            bestAngle = 0;
+        }
+        
+        // Change the direction of the ball to left
+        if (otherPlayer.position.x < mPlayer.position.x) 
+        {
+            bestAngle = (Mathf.Deg2Rad * 180) - bestAngle;
+            bestAngle -= Mathf.Deg2Rad * ANGLE_OFFSET;
+        }
+        
+        if (bestAngle < (Mathf.Deg2Rad * 90) && bestAngle >= 0)
+        {
+            bestAngle += Mathf.Deg2Rad * ANGLE_OFFSET;
+        }
+        return bestAngle;
     }
 }
