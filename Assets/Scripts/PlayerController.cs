@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine.Events;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -82,7 +83,8 @@ public class PlayerController : MonoBehaviour
                 ball.constraints = RigidbodyConstraints2D.None;
                 ball.transform.parent = null;
                 ball.GetComponent<BallController>().Release();
-                ball.GetComponent<BallController>().Kick(calcAngle(), mPlayer); // Throw ball in some angle;
+                ball.GetComponent<BallController>().Kick(CalcAngle(), mPlayer); // Throw ball in some angle;
+                EventManager.TriggerEvent("EVENT_AIR_BALL");
             }
             return;
         }
@@ -163,6 +165,8 @@ public class PlayerController : MonoBehaviour
             ball.constraints = RigidbodyConstraints2D.FreezeAll;
             ball.isKinematic = true;
             ball.GetComponent<BallController>().Hold();
+            
+            EventManager.TriggerEvent("EVENT_HOLD_BALL");
         }
     }
 
@@ -228,7 +232,7 @@ public class PlayerController : MonoBehaviour
 
    
    // Calculates the angle the ball will be kicked with.
-   private float calcAngle()
+   private float CalcAngle()
     {
         float deltaY = Mathf.Abs(otherPlayer.position.y - mPlayer.position.y);
         float deltaX = Mathf.Abs(otherPlayer.position.x - mPlayer.position.x);

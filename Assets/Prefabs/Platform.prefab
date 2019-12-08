@@ -68,8 +68,9 @@ GameObject:
   - component: {fileID: 8207848519319238515}
   - component: {fileID: 2348365366799994083}
   - component: {fileID: 1711451942}
+  - component: {fileID: 3318491744890497220}
   m_Layer: 9
-  m_Name: Floor
+  m_Name: Platform
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,3 +158,17 @@ EdgeCollider2D:
   m_Points:
   - {x: -0.48760867, y: 0.59194463}
   - {x: 0.48452023, y: 0.63236535}
+--- !u!114 &3318491744890497220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3527644118025495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3d540bfde54ad74a856568c91fc8ef9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  triggerBall: {fileID: 4001480557058608553, guid: de9fcc1636f7a2949a8635cddb90177c,
+    type: 3}
