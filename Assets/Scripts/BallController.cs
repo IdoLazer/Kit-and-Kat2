@@ -20,6 +20,7 @@ public class BallController : MonoBehaviour
     
     void Awake()
     {
+        isKicked = false;
         rb = GetComponent<Rigidbody2D>();
         initialTransform = rb.transform;
         ac = GetComponent<Animator>();
@@ -109,6 +110,7 @@ public class BallController : MonoBehaviour
 
     public void OnEnable()
     {
+        isKicked = false;
         rb.transform.position = initialTransform.position;
     }
 }

@@ -112,6 +112,7 @@ public class ManagerController : MonoBehaviour
 
     void EndMode()
     {
+        ball.SetActive(false);
 
     }
 
@@ -130,6 +131,7 @@ public class ManagerController : MonoBehaviour
 
         gameOn.SetActive(true);
         gameOnCanvas.SetActive(true);
+
 
         endGame.SetActive(false);
         endGameCanvas.SetActive(false);
