@@ -1,29 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class ManagerController : MonoBehaviour
 {
     public GameObject startGame;
+    public GameObject startGameCanvas;
     public GameObject gameOn;
     public GameObject gameOnCanvas;
     public GameObject endGame;
     public GameObject endGameCanvas;
     public GameObject ball;
+    public GameObject backgroundBallInAir;
+    public GameObject backgroundBallInCat;
 
-    public float gameTimeSeconds;
     public TextMeshProUGUI scoreRecordMsg;
     public TextMeshProUGUI currScoredMsg;
     public TextMeshProUGUI currTimerMsg;
 
     private static ManagerController _instance;
 
-    private readonly int timerCountDown = 100;
     private int mode;
-    private float startTime;
     private static float scoreRecord = 0f;
     private static float currScore = 0f;
+    private bool backgroundModeHeldByCat = false; //First state is not held by cat
  
 
     public static ManagerController Instance { get { return _instance; } }
@@ -40,6 +42,7 @@ public class ManagerController : MonoBehaviour
         }
         mode = 1;
         startGame.SetActive(true);
+        startGameCanvas.SetActive(true);
         gameOn.SetActive(false);
         gameOnCanvas.SetActive(false);
         endGame.SetActive(false);
@@ -74,14 +77,30 @@ public class ManagerController : MonoBehaviour
 
     void PlayMode()
     {
-        float timeProgress = TimerUpdate();
-        currScore = timeProgress;
+        float healthProgress = HealthUpdate();
+        currScore = healthProgress;
 
-        if (timeProgress <= 0)
+        if (healthProgress <= 0)
         {
             EndPlayTheGame();
         }
 
+
+        if (backgroundModeHeldByCat != ball.GetComponent<BallController>().isHeldByCat)
+        {
+            backgroundModeHeldByCat = ball.GetComponent<BallController>().isHeldByCat;
+            if (backgroundModeHeldByCat)
+            {
+                backgroundBallInCat.SetActive(true);
+                backgroundBallInAir.SetActive(false);
+            }
+            else
+            {
+                backgroundBallInCat.SetActive(false);
+                backgroundBallInAir.SetActive(true);
+            }
+
+        }
         //if(win)
     }
 
@@ -90,11 +109,18 @@ public class ManagerController : MonoBehaviour
 
     }
 
+    public void RestartGame()
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+
+    }
+
     public void StartPlayTheGame()
     {
         mode = 2;
 
         startGame.SetActive(false);
+        startGameCanvas.SetActive(false);
 
         gameOn.SetActive(true);
         gameOnCanvas.SetActive(true);
@@ -102,13 +128,13 @@ public class ManagerController : MonoBehaviour
         endGame.SetActive(false);
         endGameCanvas.SetActive(false);
 
-        startTime = Time.time;
     }
 
     private void EndPlayTheGame()
     {
         mode = 3;
         startGame.SetActive(false);
+        startGameCanvas.SetActive(false);
 
         gameOn.SetActive(false);
         gameOnCanvas.SetActive(false);
@@ -122,14 +148,8 @@ public class ManagerController : MonoBehaviour
 
     }
 
-    private float TimerUpdate()
+    private float HealthUpdate()
     {
-        //float t = Time.time - startTime;
-        //int precentTimePassed = (int) ((t / gameTimeSeconds) * 100);
-        ////string minutes = (timerCountDown - Mathf.Ceil(t / 60)).ToString();
-        ////string seconds = (60 - (t % 60)).ToString("f1");
-        //currScore = (timerCountDown - precentTimePassed);
-        //currTimerMsg.text = currScore.ToString("f2");
 
         float t = ball.GetComponent<BallController>().mHealth;
         return t;

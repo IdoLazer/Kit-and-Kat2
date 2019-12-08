@@ -9,8 +9,8 @@ public class BallController : MonoBehaviour
     [SerializeField] public float mHealth = 100f;
     [SerializeField] float mHoldingDamage = 1.5f;
     [SerializeField] float mMovingDamage = 1.5f;
+    public bool isHeldByCat = false;
     private Rigidbody2D rb;
-    private bool isHeldByCat = false;
     private bool isMoving = false;
     private bool isKicked = false;
     private Transform initialTransform;
