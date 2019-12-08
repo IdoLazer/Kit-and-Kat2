@@ -15,6 +15,7 @@ public class ManagerController : MonoBehaviour
     public GameObject ball;
     public GameObject backgroundBallInAir;
     public GameObject backgroundBallInCat;
+    public GameObject winGameUpLimit;
 
     public TextMeshProUGUI scoreRecordMsg;
     public TextMeshProUGUI currScoredMsg;
@@ -101,7 +102,12 @@ public class ManagerController : MonoBehaviour
             }
 
         }
-        //if(win)
+
+        if (winGameUpLimit.GetComponent<WinTheGame>().EnteredTrigger)  //if(win)
+        {
+            EndPlayTheGame();
+        }
+       
     }
 
     void EndMode()
@@ -144,6 +150,7 @@ public class ManagerController : MonoBehaviour
 
         if (currScore > scoreRecord) { scoreRecord = currScore; }
         scoreRecordMsg.text = scoreRecord.ToString("f2");
+        if (currScore < 0f) { currScore = 0f; }
         currScoredMsg.text = currScore.ToString("f2");
 
     }
